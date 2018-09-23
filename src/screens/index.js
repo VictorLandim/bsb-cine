@@ -1,6 +1,9 @@
-import SearchScreen from './SearchScreen';
-import PlaceListScreen from './PlaceListScreen';
-import MovieListScreen from './MovieListScreen';
 import HomeScreen from './HomeScreen';
+import TheaterListScreen from './TheaterListScreen';
+import TheaterDetailsScreen from './TheaterDetailsScreen';
+import MovieListScreen from './MovieListScreen';
+import MovieDetailsScreen from './MovieDetailsScreen';
 
-export { SearchScreen, PlaceListScreen, MovieListScreen, HomeScreen };
+export {
+    HomeScreen, MovieListScreen, TheaterListScreen, MovieDetailsScreen, TheaterDetailsScreen,
+};

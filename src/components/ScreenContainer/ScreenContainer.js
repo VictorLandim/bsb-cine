@@ -1,19 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
-import EStyleSheet from 'react-native-extended-stylesheet';
+import { View, StyleSheet } from 'react-native';
 
-const ScreenContainer = ({ children }) => <View style={styles.container}>{children}</View>;
+const ScreenContainer = ({ children, backgroundColor }) => (
+    <View style={styles(backgroundColor).container}>{children}</View>
+);
 
-ScreenContainer.propTypes = {
-    children: PropTypes.any
-};
-
-const styles = EStyleSheet.create({
+const styles = backgroundColor => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '$black'
-    }
+        backgroundColor,
+    },
 });
+
+ScreenContainer.propTypes = {
+    children: PropTypes.any,
+};
 
 export default ScreenContainer;

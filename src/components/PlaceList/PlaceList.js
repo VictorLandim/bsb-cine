@@ -1,19 +1,19 @@
 import React from 'react';
 import { FlatList } from 'react-native';
-import { PlaceCard } from '../PlaceCard';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { TheaterCard } from '../TheaterCard';
 
-const PlaceList = ({ placeData }) => (
+const TheaterCard = ({ theaterData }) => (
     <FlatList
         style={{
-            flex: 1
+            flex: 1,
         }}
         contentContainerStyle={{
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
         }}
-        data={placeData}
-        renderItem={({ item }) => <PlaceCard item={item} />}
+        data={theaterData}
+        renderItem={({ item }) => <TheaterCard item={item} />}
     />
 );
 
@@ -22,8 +22,8 @@ const styles = EStyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '$black'
-    }
+        backgroundColor: '$black',
+    },
 });
 
-export default PlaceList;
+export default TheaterCard;

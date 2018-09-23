@@ -1,3 +1,3 @@
-import PlaceList from './PlaceList';
+import TheaterList from './TheaterList';
 
-export { PlaceList };
+export { TheaterList };

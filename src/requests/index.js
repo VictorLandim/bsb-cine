@@ -5,9 +5,9 @@ import { Buffer } from 'buffer';
 
 const homePageUrl = 'http://df.divirtasemais.com.br/canal/cinema/';
 
-const getPage = async url => {
+const getPage = async (url) => {
     const arrayBuffer = await axios.get(url, { responseType: 'arraybuffer' });
-    return iconv.decode(new Buffer(arrayBuffer.data), 'iso-8859-1').toString(); // html
+    return iconv.decode(Buffer.from(arrayBuffer.data), 'iso-8859-1').toString(); // html
 };
 
 export const getOptions = async () => {
@@ -15,37 +15,37 @@ export const getOptions = async () => {
     const $ = cheerio.load(html, { decodeEntities: false });
 
     const movies = $('#filme');
-    const places = $('#cinema');
+    const theaters = $('#cinema');
 
     const movieOptions = movies
         .find('option')
-        .map(function(i, e) {
+        .map(function (i, e) {
             return {
                 title: $(this).html(),
                 url: $(this).val(),
-                key: `${i}`
+                key: `${i}`,
             };
         })
         .toArray();
 
-    const placeOptions = places
+    const theaterOptions = theaters
         .find('option')
-        .map(function(i, e) {
+        .map(function (i, e) {
             return {
                 title: $(this).html(),
                 url: $(this).val(),
-                key: `${i}`
+                key: `${i}`,
             };
         })
         .toArray();
 
     movieOptions.shift();
-    placeOptions.shift();
+    theaterOptions.shift();
 
-    return { movieOptions, placeOptions };
+    return { movieOptions, theaterOptions };
 };
 
-export const getMoviesForPlace = async url => {
+export const getTheaterDetails = async (url) => {
     const html = await getPage(url);
 
     const $ = cheerio.load(html, { decodeEntities: false });
@@ -53,29 +53,57 @@ export const getMoviesForPlace = async url => {
     return [];
 };
 
-export const getPlacesForMovie = async url => {
+export const getMovieDetails = async (url) => {
     const html = await getPage(url);
     const $ = cheerio.load(html, { decodeEntities: false });
 
-    const image = $('.cont_filme_img.unit')
+    const response = {};
+
+    response.image = $('.cont_filme_img.unit')
         .find('img')
         .attr('src');
-    const synopsis = $('.cont_filme_img.unit')
+
+    response.synopsis = $('.cont_filme_img.unit')
         .find('span')
         .text();
-    const title = $('.titulo_filme_cartaz.mtm').text();
 
-    const schedule = [];
+    response.title = $('.titulo_filme_cartaz.mtm').text();
 
-    $('.cinemas_filmes.unit.mrs.textoA').each(function(i, e) {
-        const response = {};
-        response.cinema = $(this)
+    response.trailer = `https://youtube.com/watch?v=${
+        $('.unit.corpo_filme iframe')
+            .attr('src')
+            .split('embed/')[1]
+    }`;
+
+    $('#box_3 li').each(function () {
+        const row = $(this)
+            .text()
+            .replace(/^\s+|\s+$/g, '');
+        let key = row.split(':')[0].replace(/^\s+|\s+$/g, '');
+        let value = row.split(':')[1].replace(/^\s+|\s+$/g, '');
+        if (key === 'Titulo Original') key = 'originalTitle';
+        if (key === 'Duracao') key = 'duration';
+        if (key === 'Censura') key = 'rating';
+        if (key === 'Genero') {
+            key = 'genre';
+            const genres = value.split(',').map(e => e.replace(/^\s+|\s+$/g, ''));
+
+            value = genres.filter((elem, pos, arr) => genres.indexOf(elem) == pos).join(', ');
+        }
+        response[key] = value;
+    });
+
+    response.schedule = [];
+
+    $('.cinemas_filmes.unit.mrs.textoA').each(function (i, e) {
+        const resp = {};
+        resp.name = $(this)
             .find('li.nome_cinema h4')
             .text();
-        response.blocks = [];
+        resp.blocks = [];
         $(this)
             .find('li ul.salas_cinema.unit')
-            .each(function(i, e) {
+            .each(function (i, e) {
                 const obj = {};
                 obj.title = $(this)
                     .find('.titulo_sala_cinema')
@@ -85,7 +113,7 @@ export const getPlacesForMovie = async url => {
 
                 $(this)
                     .find('.horarios')
-                    .each(function(i, e) {
+                    .each(function (i, e) {
                         obj.horarios.push({
                             value: $(this)
                                 .find('li')
@@ -95,15 +123,15 @@ export const getPlacesForMovie = async url => {
                                 $(this)
                                     .find('li')
                                     .eq(1)
-                                    .text() === 'DUB'
+                                    .text() === 'DUB',
                         });
                     });
 
-                response.blocks.push(obj);
+                resp.blocks.push(obj);
             });
 
-        schedule.push(response);
+        response.schedule.push(resp);
     });
 
-    return { title, image, synopsis, schedule };
+    return response;
 };

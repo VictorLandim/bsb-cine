@@ -1,7 +1,10 @@
 import { BLUE } from './colors';
+
 export const buttonTheme = {
     colors: {
-        primary: BLUE
+        primary: BLUE,
     },
-    roundness: 5
+    roundness: 5,
 };
+
+export const otherTheme = {};

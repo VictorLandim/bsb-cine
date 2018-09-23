@@ -1,5 +1,5 @@
 {
-    "extends": "airbnb",
+    "extends": "airbnb", // EXISTING
     "parser": "babel-eslint",
     "env": {
         "browser": true
@@ -14,6 +14,20 @@
         ],
         "react/forbid-prop-types": [0],
         "react/require-default-props": [0],
-        "global-require": [0]
+        "global-require": [0],
+
+        "indent": ["error", 4],
+
+        // Indent JSX with 4 spaces
+        "react/jsx-indent": ["error", 4],
+
+        // Indent props with 4 spaces
+        "react/jsx-indent-props": ["error", 4],
+
+        "linebreak-style": [0],
+
+        "no-console": [0],
+
+        "no-use-before-define": [0]
     }
 }

@@ -1,56 +1,62 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Alert } from 'react-native';
+import PropTypes from 'prop-types';
 import { Button } from 'react-native-paper';
+import { LinearGradient } from 'expo';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { connect } from 'react-redux';
 import { ScreenContainer } from '../components/ScreenContainer';
 import { Logo } from '../components/Logo';
-import { getOptions } from '../logic/movie';
 import { buttonTheme } from '../config/theme';
+import { fetchOptions } from '../actions';
 
 class HomeScreen extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            loading: false
-        };
+    static propTypes = {
+        isLoading: PropTypes.bool,
+        optionsError: PropTypes.object,
+        dispatch: PropTypes.func,
+        navigation: PropTypes.object,
+    };
+
+    componentWillReceiveProps(nextProps) {
+        const { isLoading, navigation } = this.props;
+        if (isLoading && !nextProps.isLoading) {
+            if (nextProps.optionsError) {
+                Alert.alert(nextProps.optionsError);
+            } else {
+                navigation.navigate('SearchScreen');
+            }
+        }
     }
 
     onPress = () => {
-        this.setState(
-            {
-                loading: true
-            },
-            async () => {
-                const options = await getOptions();
-                const { navigate } = this.props.navigation;
-                this.setState(
-                    {
-                        loading: false
-                    },
-                    () => navigate('SearchScreen', { options })
-                );
-            }
-        );
+        const { isLoading, dispatch } = this.props;
+        if (!isLoading) {
+            dispatch(fetchOptions());
+        }
     };
 
     render() {
+        const { isLoading } = this.props;
         return (
             <ScreenContainer>
-                <View style={styles.container}>
+                <LinearGradient colors={['#263238', '#37474f']} style={styles.container}>
                     <Logo />
                     <View style={styles.textContainer}>
-                        <Text style={styles.text}>Busque pelos melhores filmes e cinemas perto de você</Text>
+                        <Text style={styles.text}>
+                            {'Busque pelos melhores filmes e cinemas perto de você'}
+                        </Text>
                     </View>
                     <Button
-                        loading={this.state.loading}
+                        loading={isLoading}
                         theme={buttonTheme}
                         style={styles.button}
                         onPress={this.onPress}
                         mode="contained"
                     >
-                        Escolher
+                        {isLoading ? 'Buscando' : 'Escolher'}
                     </Button>
-                </View>
+                </LinearGradient>
             </ScreenContainer>
         );
     }
@@ -59,24 +65,29 @@ class HomeScreen extends React.Component {
 const styles = EStyleSheet.create({
     container: {
         flex: 1,
+        alignItems: 'center',
         justifyContent: 'center',
-        alignItems: 'center'
     },
     textContainer: {
         width: '80%',
-        marginTop: 30,
-        marginBottom: 75
+        marginTop: 40,
+        marginBottom: 75,
     },
     text: {
         color: '#fff',
         fontSize: 17,
         textAlign: 'center',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
     },
     button: {
         paddingHorizontal: 12,
-        paddingVertical: 5
-    }
+        paddingVertical: 5,
+    },
 });
 
-export default HomeScreen;
+const mapStateToProps = state => ({
+    isLoading: state.isLoadingOptions,
+    optionsError: state.optionsError,
+});
+
+export default connect(mapStateToProps)(HomeScreen);

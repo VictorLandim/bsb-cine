@@ -8,3 +8,5 @@ export const BLUE = '#3d5afe';
 export const LIGHT_GRAY = '#b0bec5';
 export const GRAY = '#90a4ae';
 export const DARK_GRAY = '#546e7a';
+export const GREEN = '#26a69a';
+export const CYAN = '#039be5';

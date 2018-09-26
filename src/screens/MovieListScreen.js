@@ -1,9 +1,12 @@
 import React from 'react';
-import { View, Text } from 'react-native';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { ScreenContainer } from '../components/ScreenContainer';
 import { SelectionList } from '../components/SelectionList';
 import { BLUE, WHITE, BLACK } from '../config/colors';
+import { HeaderRightDate } from '../components/Header';
+import { Spinner } from '../components/Spinner';
+import { fetchMovieOptions } from '../actions';
 
 class MovieListScreen extends React.Component {
     static navigationOptions = {
@@ -12,7 +15,16 @@ class MovieListScreen extends React.Component {
         headerStyle: {
             backgroundColor: BLUE,
         },
+        headerRight: <HeaderRightDate />,
     };
+
+    componentWillMount() {
+        const { options, dispatch } = this.props;
+
+        if (!options || options.length === 0) {
+            dispatch(fetchMovieOptions());
+        }
+    }
 
     onItemPress = (selectedMovie) => {
         const { navigation } = this.props;
@@ -20,19 +32,32 @@ class MovieListScreen extends React.Component {
     };
 
     render() {
-        const { movieOptions } = this.props;
+        const { options, isLoading } = this.props;
         return (
             <ScreenContainer backgroundColor={BLACK}>
-                <SelectionList
-                    iconColor={BLUE}
-                    onItemPress={item => this.onItemPress(item)}
-                    data={movieOptions}
-                />
+                {isLoading ? (
+                    <Spinner />
+                ) : (
+                    <SelectionList
+                        iconColor={BLUE}
+                        onItemPress={item => this.onItemPress(item)}
+                        data={options}
+                    />
+                )}
             </ScreenContainer>
         );
     }
 }
 
-const mapStateToProps = ({ movieOptions }) => ({ movieOptions });
+MovieListScreen.propTypes = {
+    options: PropTypes.array,
+    isLoading: PropTypes.bool,
+    navigation: PropTypes.object,
+};
+
+const mapStateToProps = ({ movie }) => ({
+    options: movie.options,
+    isLoading: movie.isLoadingOptions,
+});
 
 export default connect(mapStateToProps)(MovieListScreen);

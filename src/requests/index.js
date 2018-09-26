@@ -10,12 +10,11 @@ const getPage = async (url) => {
     return iconv.decode(Buffer.from(arrayBuffer.data), 'iso-8859-1').toString(); // html
 };
 
-export const getOptions = async () => {
+export const getMovieOptions = async () => {
     const html = await getPage(homePageUrl);
     const $ = cheerio.load(html, { decodeEntities: false });
 
     const movies = $('#filme');
-    const theaters = $('#cinema');
 
     const movieOptions = movies
         .find('option')
@@ -23,10 +22,25 @@ export const getOptions = async () => {
             return {
                 title: $(this).html(),
                 url: $(this).val(),
-                key: `${i}`,
+                key: $(this)
+                    .val()
+                    .split('/')
+                    .pop()
+                    .split('.')[0],
             };
         })
         .toArray();
+
+    movieOptions.shift();
+
+    return movieOptions;
+};
+
+export const getTheaterOptions = async () => {
+    const html = await getPage(homePageUrl);
+    const $ = cheerio.load(html, { decodeEntities: false });
+
+    const theaters = $('#cinema');
 
     const theaterOptions = theaters
         .find('option')
@@ -34,15 +48,18 @@ export const getOptions = async () => {
             return {
                 title: $(this).html(),
                 url: $(this).val(),
-                key: `${i}`,
+                key: $(this)
+                    .val()
+                    .split('/')
+                    .pop()
+                    .split('.')[0],
             };
         })
         .toArray();
 
-    movieOptions.shift();
     theaterOptions.shift();
 
-    return { movieOptions, theaterOptions };
+    return theaterOptions;
 };
 
 export const getTheaterDetails = async (url) => {
@@ -50,7 +67,33 @@ export const getTheaterDetails = async (url) => {
 
     const $ = cheerio.load(html, { decodeEntities: false });
 
-    return [];
+    const response = {};
+
+    $('#box_1 .cartaz').each(function () {
+        response.url = $(this)
+            .find('img')
+            .parent()
+            .attr('href');
+
+        response.title = $(this)
+            .find('.tcine')
+            .text()
+            .replace(/^\s+|\s+$/g, '');
+
+        response.room = $(this)
+            .find('.tsalas .titnomefilme')
+            .text();
+
+        response.schedule = [];
+
+        $(this)
+            .find('ul.horarios li')
+            .each(function () {
+                response.schedule.push($(this).text());
+            });
+    });
+
+    return response;
 };
 
 export const getMovieDetails = async (url) => {

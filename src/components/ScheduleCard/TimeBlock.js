@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import PropTypes from 'prop-types';
 import {
-    GREEN, CYAN, BLACK, DARK_GRAY, LIGHT_GRAY, WHITE,
+    GREEN, CYAN, BLACK, LIGHT_GRAY,
 } from '../../config/colors';
 
 const TimeBlock = ({ value, dub }) => (
@@ -37,5 +38,10 @@ const styles = StyleSheet.create({
         backgroundColor: GREEN,
     },
 });
+
+TimeBlock.propTypes = {
+    value: PropTypes.string.isRequired,
+    dub: PropTypes.bool.isRequired,
+};
 
 export default TimeBlock;

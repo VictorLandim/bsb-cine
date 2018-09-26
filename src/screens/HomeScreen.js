@@ -1,46 +1,33 @@
 import React from 'react';
-import { View, Text, Alert } from 'react-native';
+import {
+    View, Text, StyleSheet, StatusBar,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import { Button } from 'react-native-paper';
 import { LinearGradient } from 'expo';
-import EStyleSheet from 'react-native-extended-stylesheet';
-import { connect } from 'react-redux';
 import { ScreenContainer } from '../components/ScreenContainer';
 import { Logo } from '../components/Logo';
 import { buttonTheme } from '../config/theme';
-import { fetchOptions } from '../actions';
 
 class HomeScreen extends React.Component {
     static propTypes = {
-        isLoading: PropTypes.bool,
-        optionsError: PropTypes.object,
-        dispatch: PropTypes.func,
         navigation: PropTypes.object,
     };
 
-    componentWillReceiveProps(nextProps) {
-        const { isLoading, navigation } = this.props;
-        if (isLoading && !nextProps.isLoading) {
-            if (nextProps.optionsError) {
-                Alert.alert(nextProps.optionsError);
-            } else {
-                navigation.navigate('SearchScreen');
-            }
-        }
-    }
-
     onPress = () => {
-        const { isLoading, dispatch } = this.props;
-        if (!isLoading) {
-            dispatch(fetchOptions());
-        }
+        const { navigation } = this.props;
+        navigation.navigate('MovieListScreen');
     };
 
     render() {
-        const { isLoading } = this.props;
         return (
             <ScreenContainer>
-                <LinearGradient colors={['#263238', '#37474f']} style={styles.container}>
+                {/* <StatusBar backgroundColor="transparent" translucent /> */}
+                <LinearGradient
+                    colors={['#263238', '#37474f']}
+                    start={[0.1, 0]}
+                    style={styles.container}
+                >
                     <Logo />
                     <View style={styles.textContainer}>
                         <Text style={styles.text}>
@@ -48,13 +35,12 @@ class HomeScreen extends React.Component {
                         </Text>
                     </View>
                     <Button
-                        loading={isLoading}
                         theme={buttonTheme}
                         style={styles.button}
                         onPress={this.onPress}
                         mode="contained"
                     >
-                        {isLoading ? 'Buscando' : 'Escolher'}
+                        {'Ver programação de hoje'}
                     </Button>
                 </LinearGradient>
             </ScreenContainer>
@@ -62,7 +48,7 @@ class HomeScreen extends React.Component {
     }
 }
 
-const styles = EStyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
@@ -70,7 +56,7 @@ const styles = EStyleSheet.create({
     },
     textContainer: {
         width: '80%',
-        marginTop: 40,
+        marginTop: 60,
         marginBottom: 75,
     },
     text: {
@@ -85,9 +71,4 @@ const styles = EStyleSheet.create({
     },
 });
 
-const mapStateToProps = state => ({
-    isLoading: state.isLoadingOptions,
-    optionsError: state.optionsError,
-});
-
-export default connect(mapStateToProps)(HomeScreen);
+export default HomeScreen;

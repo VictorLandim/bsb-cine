@@ -21,5 +21,10 @@
             "package": "com.lan.bsbcine",
             "permissions": []
         }
+        // "androidStatusBarColor": "#1B2327",
+        // "androidStatusBar": {
+        //     "barStyle": "light-content",
+        //     "backgroundColor": "#1B2327"
+        // }
     }
 }

@@ -1,6 +1,5 @@
 import React from 'react';
-import { Text, TouchableOpacity } from 'react-native';
-import EStyleSheet from 'react-native-extended-stylesheet';
+import { Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 const TextButton = (props) => {
     const { color, onPress, text } = props;
@@ -14,12 +13,12 @@ const TextButton = (props) => {
     );
 };
 
-const Styles = color => EStyleSheet.create({
+const Styles = color => StyleSheet.create({
     container: {
         flex: 1,
     },
     text: {
-        alignSelf: 'center',
+        alignSelf: 'flex-end',
         color,
         fontSize: 14,
         fontWeight: '500',

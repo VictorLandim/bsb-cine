@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Image, Text } from 'react-native';
-import EStyleSheet from 'react-native-extended-stylesheet';
+import {
+    View, Image, Text, StyleSheet,
+} from 'react-native';
+import { BLACK } from '../../config/colors';
 
 const MovieCard = (props) => {
     const {
@@ -33,12 +35,12 @@ const MovieCard = (props) => {
     );
 };
 
-const styles = EStyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '$black',
+        backgroundColor: BLACK,
     },
     image: {},
     label: {},

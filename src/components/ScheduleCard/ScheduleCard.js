@@ -3,10 +3,12 @@ import {
     View, Text, StyleSheet, Linking, Alert,
 } from 'react-native';
 import { IconButton } from 'react-native-paper';
+import PropTypes from 'prop-types';
 import {
-    BLACK, LIGHT_GRAY, DARK_GRAY, WHITE, BLUE,
+    BLACK, LIGHT_GRAY, WHITE, BLUE,
 } from '../../config/colors';
 import TimeBlock from './TimeBlock';
+import { SlideView, ScaleView, SlideRightView } from '../Animations';
 
 class ScheduleCard extends React.Component {
     openMaps = (name) => {
@@ -20,10 +22,11 @@ class ScheduleCard extends React.Component {
         });
     };
 
-    render() {
+    renderContent = () => {
         const { schedule } = this.props;
+
         return (
-            <View style={styles.container}>
+            <View>
                 <View style={styles.titleContainer}>
                     <Text style={styles.title}>{schedule.name}</Text>
                     <IconButton
@@ -34,17 +37,50 @@ class ScheduleCard extends React.Component {
                     />
                 </View>
                 {schedule.blocks.map(e => (
-                    <View style={styles.blockContainer}>
+                    <View
+                        key={`${e.title}-${JSON.stringify(e.horarios)}`}
+                        style={styles.blockContainer}
+                    >
                         <Text style={styles.roomTitle}>{`Sala: ${e.title}`}</Text>
                         <View style={styles.timeBlocksContainer}>
                             {e.horarios.map(f => (
-                                <TimeBlock dub={f.dub} value={f.value} />
+                                <TimeBlock key={f.value} dub={f.dub} value={f.value} />
                             ))}
                         </View>
                     </View>
                 ))}
             </View>
         );
+    };
+
+    render() {
+        const { animation } = this.props;
+
+        if (animation === 'scale') {
+            return (
+                <ScaleView duration={350} style={styles.container}>
+                    {this.renderContent()}
+                </ScaleView>
+            );
+        }
+
+        if (animation === 'slide') {
+            return (
+                <SlideView duration={350} style={styles.container}>
+                    {this.renderContent()}
+                </SlideView>
+            );
+        }
+
+        if (animation === 'slideRight') {
+            return (
+                <SlideRightView duration={350} style={styles.container}>
+                    {this.renderContent()}
+                </SlideRightView>
+            );
+        }
+
+        return <View style={styles.container}>{this.renderContent()}</View>;
     }
 }
 
@@ -52,8 +88,8 @@ const styles = StyleSheet.create({
     container: {
         padding: 10,
         paddingTop: 0,
-        marginVertical: 10,
         width: '95%',
+        marginVertical: 10,
         marginRight: 'auto',
         marginLeft: 'auto',
         borderRadius: 7,
@@ -63,14 +99,14 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     blockContainer: {
-        flexWrap: 'wrap',
         marginVertical: 10,
     },
     timeBlocksContainer: {
+        flexWrap: 'wrap',
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        alignItems: 'center',
-        marginVertical: 10,
+        alignItems: 'flex-start',
+        marginVertical: 5,
     },
     titleContainer: {
         flexDirection: 'row',
@@ -86,7 +122,13 @@ const styles = StyleSheet.create({
     roomTitle: {
         color: LIGHT_GRAY,
         fontSize: 14,
+        paddingLeft: 5,
     },
 });
+
+ScheduleCard.propTypes = {
+    schedule: PropTypes.object,
+    animation: PropTypes.oneOf(['slide', 'scale']),
+};
 
 export default ScheduleCard;

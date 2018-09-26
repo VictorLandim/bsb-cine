@@ -1,13 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { ScrollView } from 'react-native';
+import { ScrollView, FlatList, View } from 'react-native';
 import { ScreenContainer } from '../components/ScreenContainer';
 import { BLUE, WHITE } from '../config/colors';
 import { fetchMovieDetails } from '../actions';
-import { Loader } from '../components/common/Loader';
+import { Spinner } from '../components/Spinner';
 import { MovieHeader } from '../components/MovieHeader';
 import { ScheduleCard } from '../components/ScheduleCard';
+import { HeaderRightDate } from '../components/Header';
 
 class MovieDetailsScreen extends React.Component {
     static navigationOptions = ({ navigation }) => ({
@@ -15,31 +16,41 @@ class MovieDetailsScreen extends React.Component {
         headerStyle: {
             backgroundColor: BLUE,
         },
-        title: navigation.state.params.selectedMovie.title || 'Filme',
+        title: 'Detalhes do filme',
+        headerRight: <HeaderRightDate />,
     });
 
     componentWillMount() {
         const { dispatch, navigation } = this.props;
-        const { url } = navigation.state.params.selectedMovie;
-        dispatch(fetchMovieDetails(url));
+        const { key, url } = navigation.state.params.selectedMovie;
+        dispatch(fetchMovieDetails(key, url));
     }
 
     renderMovieDetails() {
-        const { movieDetails, isLoadingMovieDetails } = this.props;
-        const { schedule, ...movieInfo } = movieDetails;
-        console.log(movieInfo);
-        if (isLoadingMovieDetails) return <Loader size={20} color={BLUE} />;
+        const { isLoadingdetails, details } = this.props;
+        const detailsExist = Object.keys(details).length > 0;
 
-        if (Object.keys(movieDetails).length > 0) {
+        if (isLoadingdetails || !detailsExist) return <Spinner size={50} color={BLUE} />;
+
+        if (detailsExist) {
+            const { schedule, ...movieInfo } = details;
             return (
-                <ScrollView style={{ flex: 1 }}>
-                    <MovieHeader {...movieInfo} color={BLUE} />
-                    {schedule.map((e, i) => (
-                        <ScheduleCard schedule={e} />
-                    ))}
-                </ScrollView>
+                <View style={{ flex: 1 }}>
+                    <FlatList
+                        keyExtractor={item => `${JSON.stringify(item)}`}
+                        data={schedule}
+                        ListHeaderComponent={() => (
+                            <MovieHeader key={movieInfo.genre} {...movieInfo} color={BLUE} />
+                        )}
+                        renderItem={({ item }) => (
+                            <ScheduleCard animation="scale" key={item.name} schedule={item} />
+                        )}
+                    />
+                </View>
             );
         }
+
+        return null;
     }
 
     render() {
@@ -50,13 +61,13 @@ class MovieDetailsScreen extends React.Component {
 MovieDetailsScreen.propTypes = {
     dispatch: PropTypes.func,
     navigation: PropTypes.object,
-    movieDetails: PropTypes.any,
-    isLoadingMovieDetails: PropTypes.bool,
+    details: PropTypes.any,
+    isLoadingdetails: PropTypes.bool,
 };
 
-const mapStateToProps = ({ isLoadingMovieDetails, movieDetails }) => ({
-    isLoadingMovieDetails,
-    movieDetails,
+const mapStateToProps = ({ movie }, { navigation }) => ({
+    isLoadingDetails: movie.isLoadingDetails,
+    details: movie.details[navigation.state.params.selectedMovie.key] || {},
 });
 
 export default connect(mapStateToProps)(MovieDetailsScreen);

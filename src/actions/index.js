@@ -1,15 +1,30 @@
-import { OPTIONS_FETCH, THEATER_DETAILS_FETCH, MOVIE_DETAILS_FETCH } from '../config/types';
+import {
+    THEATER_OPTIONS_FETCH,
+    MOVIE_OPTIONS_FETCH,
+    THEATER_DETAILS_FETCH,
+    MOVIE_DETAILS_FETCH,
+} from '../config/types';
 
-export const fetchOptions = () => ({
-    type: OPTIONS_FETCH,
+export const fetchTheaterOptions = () => ({
+    type: THEATER_OPTIONS_FETCH,
 });
 
-export const fetchTheaterDetails = theater => ({
+export const fetchMovieOptions = () => ({
+    type: MOVIE_OPTIONS_FETCH,
+});
+
+export const fetchTheaterDetails = (key, url) => ({
     type: THEATER_DETAILS_FETCH,
-    payload: theater,
+    payload: {
+        key,
+        url,
+    },
 });
 
-export const fetchMovieDetails = movie => ({
+export const fetchMovieDetails = (key, url) => ({
     type: MOVIE_DETAILS_FETCH,
-    payload: movie,
+    payload: {
+        key,
+        url,
+    },
 });

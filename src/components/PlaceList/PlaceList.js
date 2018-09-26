@@ -1,7 +1,7 @@
 import React from 'react';
-import { FlatList } from 'react-native';
-import EStyleSheet from 'react-native-extended-stylesheet';
+import { FlatList, StyleSheet } from 'react-native';
 import { TheaterCard } from '../TheaterCard';
+import { BLACK } from '../../config/colors';
 
 const TheaterCard = ({ theaterData }) => (
     <FlatList
@@ -17,12 +17,12 @@ const TheaterCard = ({ theaterData }) => (
     />
 );
 
-const styles = EStyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '$black',
+        backgroundColor: BLACK,
     },
 });
 

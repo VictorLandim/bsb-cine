@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import EStyleSheet from 'react-native-extended-stylesheet';
+import { View, Text, StyleSheet } from 'react-native';
 
 const TheaterCard = props => (
     <View style={styles.container}>
@@ -8,7 +7,7 @@ const TheaterCard = props => (
     </View>
 );
 
-const styles = EStyleSheet.create({
+const styles = StyleSheet.create({
     container: {},
     text: {
         color: '#fff',

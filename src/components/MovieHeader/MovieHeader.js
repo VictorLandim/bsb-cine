@@ -57,6 +57,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderBottomWidth: 2,
         borderColor: BLUE,
+        marginBottom: 10,
+        elevation: 5,
         // shadowOffset: { width: 10, height: 10 },
         // shadowColor: '#000',
         // shadowOpacity: 1.0,

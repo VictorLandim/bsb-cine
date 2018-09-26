@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Image } from 'react-native';
-import EStyleSheet from 'react-native-extended-stylesheet';
+import { View, Image, StyleSheet } from 'react-native';
 
 const Logo = () => (
     <View style={styles.container}>
@@ -8,15 +7,15 @@ const Logo = () => (
     </View>
 );
 
-const styles = EStyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     image: {
         width: 200,
-        height: 200
-    }
+        height: 200,
+    },
 });
 
 export default Logo;

@@ -1,5 +1,4 @@
 import React from 'React';
-import { Text } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';

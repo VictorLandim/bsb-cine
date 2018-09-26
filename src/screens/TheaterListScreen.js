@@ -2,7 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ScreenContainer } from '../components/ScreenContainer';
 import { SelectionList } from '../components/SelectionList';
+import { Spinner } from '../components/Spinner';
 import { PINK, WHITE, BLACK } from '../config/colors';
+import { fetchTheaterOptions } from '../actions';
 
 class TheaterListScreen extends React.Component {
     static navigationOptions = ({ navigation }) => ({
@@ -13,22 +15,37 @@ class TheaterListScreen extends React.Component {
         title: 'Escolher cinema',
     });
 
-    onItemPress = () => {};
+    componentWillMount() {
+        const { options, dispatch } = this.props;
+
+        if (!options || options.length === 0) {
+            dispatch(fetchTheaterOptions());
+        }
+    }
+
+    onItemPress = (selectedTheater) => {
+        const { navigation } = this.props;
+        navigation.navigate('TheaterDetailsScreen', { selectedTheater });
+    };
 
     render() {
-        const { theaterOptions } = this.props;
+        const { options, isLoading } = this.props;
+
         return (
             <ScreenContainer backgroundColor={BLACK}>
-                <SelectionList
-                    iconColor={PINK}
-                    onItemPress={this.onItemPress}
-                    data={theaterOptions}
-                />
+                {isLoading ? (
+                    <Spinner />
+                ) : (
+                    <SelectionList iconColor={PINK} onItemPress={this.onItemPress} data={options} />
+                )}
             </ScreenContainer>
         );
     }
 }
 
-const mapStateToProps = ({ theaterOptions }) => ({ theaterOptions });
+const mapStateToProps = ({ theater }) => ({
+    options: theater.options,
+    isLoading: theater.isLoadingOptions,
+});
 
 export default connect(mapStateToProps)(TheaterListScreen);

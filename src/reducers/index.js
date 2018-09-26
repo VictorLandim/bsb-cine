@@ -1,5 +1,9 @@
 import { combineReducers } from 'redux';
-import reducer from './reducer';
 
-// export default combineReducers(reducer);
-export default reducer;
+import movieReducer from './movieReducer';
+import theaterReducer from './theaterReducer';
+
+export default combineReducers({
+    movie: movieReducer,
+    theater: theaterReducer,
+});

@@ -1,6 +1,7 @@
 import React from 'react';
-import { TouchableNativeFeedback, View, Text } from 'react-native';
-import EStyleSheet from 'react-native-extended-stylesheet';
+import {
+    TouchableNativeFeedback, View, Text, StyleSheet,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BLACK, WHITE } from '../../config/colors';
 
@@ -16,7 +17,7 @@ const ListItem = ({ item, iconColor, onPress }) => (
     </TouchableNativeFeedback>
 );
 
-const styles = EStyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         backgroundColor: BLACK,
         paddingVertical: 20,
